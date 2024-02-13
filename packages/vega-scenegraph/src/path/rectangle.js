@@ -50,7 +50,9 @@ export default function() {
         bl = clamp(+crBL.call(this, _), 0, s),
         br = clamp(+crBR.call(this, _), 0, s);
 
-    if (!context) context = buffer = path();
+    if (!context) {
+      context = buffer = path();
+    }
 
     if (tl <= 0 && tr <= 0 && bl <= 0 && br <= 0) {
       context.rect(x1, y1, w, h);

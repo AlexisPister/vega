@@ -38,17 +38,20 @@ export function visit(scene, visitor) {
 
 export function pickVisit(scene, visitor) {
   var items = scene.items, hit, i;
+
   if (!items || !items.length) return null;
 
   const zitems = zorder(scene);
   if (zitems && zitems.length) items = zitems;
 
   for (i=items.length; --i >= 0;) {
+    // console.log(1111, visitor)
     if (hit = visitor(items[i])) return hit;
   }
 
   if (items === zitems) {
     for (items=scene.items, i=items.length; --i >= 0;) {
+      // console.log(22)
       if (!items[i].zindex) {
         if (hit = visitor(items[i])) return hit;
       }

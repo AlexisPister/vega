@@ -104,7 +104,6 @@
     const args = [level].concat([].slice.call(input));
     console[method].apply(console, args); // eslint-disable-line no-console
   }
-
   const None$2 = 0;
   const Error$1 = 1;
   const Warn = 2;
@@ -1997,7 +1996,6 @@
         }
       });
     };
-
     if (count) {
       interval.count = (start, end) => {
         t0$2.setTime(+start), t1$1.setTime(+end);
@@ -3209,7 +3207,6 @@
       if (c >= 48 && c <= 57) return i + 1; // is digit
     }
   }
-
   function numberLocale(locale) {
     const format = memoize(locale.format),
       formatPrefix = locale.formatPrefix;
@@ -4641,7 +4638,6 @@
       }
     }
   }
-
   function updater(target, update) {
     update = isFunction(update) ? update : constant$5(update);
     return target ? function (_, pulse) {
@@ -7305,7 +7301,6 @@
     this._inputs = null; // array of dependent input tuple field names
     this._outputs = null; // array of output tuple field names
   }
-
   Aggregate$1.Definition = {
     'type': 'Aggregate',
     'metadata': {
@@ -7483,7 +7478,6 @@
       this._measures = this._measures.map(m => compileMeasures(m, m.field));
       return Object.create(null); // aggregation cells (this.value)
     },
-
     // -- Cell Management -----
 
     cellkey: groupkey(),
@@ -7603,13 +7597,11 @@
         add.push(this.celltuple(adds[i]));
         adds[i] = null; // for garbage collection
       }
-
       for (i = 0, n = this._mlen; i < n; ++i) {
         cell = mods[i];
         (cell.num === 0 && drop ? rem : mod).push(this.celltuple(cell));
         mods[i] = null; // for garbage collection
       }
-
       this._alen = this._mlen = 0; // reset list of active cells
       this._prev = null;
       return out;
@@ -7908,7 +7900,6 @@
       }
       return this._finish(pulse, as); // generate output tuples
     },
-
     _parameterCheck(_, pulse) {
       let init = false;
       if (_.modified('stopwords') || !this._stop) {
@@ -8312,7 +8303,6 @@
       if (this.value && !(_.modified() || pulse.changed())) {
         return pulse; // early exit
       }
-
       const source = pulse.materialize(pulse.SOURCE).source,
         groups = partition$1$1(pulse.source, _.groupby, identity$6),
         smooth = _.smooth || false,
@@ -8549,7 +8539,6 @@
       for (; i < n && a[i] != null; ++i) {
         a[i] = null; // ensure old flows can be garbage collected
       }
-
       a.active = m;
     },
     transform(_, pulse) {
@@ -9135,12 +9124,10 @@
         this.celltuple(adds[i]);
         adds[i] = null; // for garbage collection
       }
-
       for (i = 0, n = this._mlen; i < n; ++i) {
         this.celltuple(mods[i]);
         mods[i] = null; // for garbage collection
       }
-
       this._alen = this._mlen = 0; // reset list of active cells
     }
   });
@@ -10021,7 +10008,6 @@
     Transform.call(this, null, params);
     this.modified(true); // always treat as modified
   }
-
   inherits(Sieve$1, Transform, {
     transform(_, pulse) {
       this.value = pulse.source;
@@ -10870,7 +10856,6 @@
   function arcPadAngle(d) {
     return d && d.padAngle; // Note: optional!
   }
-
   function intersect$3(x0, y0, x1, y1, x2, y2, x3, y3) {
     var x10 = x1 - x0,
       y10 = y1 - y0,
@@ -15924,20 +15909,14 @@
     this.items = this.items || [];
   }
   inherits(GroupItem, Item);
-  function ResourceLoader(customLoader) {
-    this._pending = 0;
-    this._loader = customLoader || loader();
-  }
-  function increment(loader) {
-    loader._pending += 1;
-  }
-  function decrement(loader) {
-    loader._pending -= 1;
-  }
-  ResourceLoader.prototype = {
+  class ResourceLoader {
+    constructor(customLoader) {
+      this._pending = 0;
+      this._loader = customLoader || loader();
+    }
     pending() {
       return this._pending;
-    },
+    }
     sanitizeURL(uri) {
       const loader = this;
       increment(loader);
@@ -15950,7 +15929,7 @@
         decrement(loader);
         return null;
       });
-    },
+    }
     loadImage(uri) {
       const loader = this,
         Image = domImage();
@@ -15983,7 +15962,7 @@
           src: e && e.url || ''
         };
       });
-    },
+    }
     ready() {
       const loader = this;
       return new Promise(accept => {
@@ -15995,7 +15974,13 @@
         poll(false);
       });
     }
-  };
+  }
+  function increment(loader) {
+    loader._pending += 1;
+  }
+  function decrement(loader) {
+    loader._pending -= 1;
+  }
   function boundStroke(bounds, item, miter) {
     if (item.stroke && item.opacity !== 0 && item.strokeOpacity !== 0) {
       const sw = item.strokeWidth != null ? +item.strokeWidth : 1;
@@ -16097,7 +16082,6 @@
             sa = ea;
             ea = s; // swap end-points
           }
-
           if (ccw) {
             ea -= Tau;
             s = sa - sa % HalfPi;
@@ -16399,10 +16383,13 @@
     return function (context, scene, x, y, gx, gy) {
       x *= context.pixelRatio;
       y *= context.pixelRatio;
+      console.log(22222);
       return pickVisit(scene, item => {
         const b = item.bounds;
         // first hit test against bounding box
-        if (b && !b.contains(gx, gy) || !b) return;
+        if (b && !b.contains(gx, gy) || !b) {
+          return;
+        }
         // if in bounding box, perform more careful test
         if (test(context, item, x, y, gx, gy)) return item;
       });
@@ -17175,7 +17162,6 @@
         context.rotate(item.angle * DegToRad);
         x = y = 0; // reset x, y
       }
-
       x += item.dx || 0;
       y += (item.dy || 0) + offset$2(item);
       tl = textLines(item);
@@ -17319,7 +17305,6 @@
   // font
   'description', 'aria', 'ariaRole', 'ariaRoleDescription' // aria
   ];
-
   function sceneToJSON(scene, indent) {
     return JSON.stringify(scene, keys$1, indent);
   }
@@ -17344,22 +17329,22 @@
     if (type) boundMark(scene);
     return scene;
   }
-  function Scenegraph(scene) {
-    if (arguments.length) {
-      this.root = sceneFromJSON(scene);
-    } else {
-      this.root = createMark({
-        marktype: 'group',
-        name: 'root',
-        role: 'frame'
-      });
-      this.root.items = [new GroupItem(this.root)];
+  class Scenegraph {
+    constructor(scene) {
+      if (arguments.length) {
+        this.root = sceneFromJSON(scene);
+      } else {
+        this.root = createMark({
+          marktype: 'group',
+          name: 'root',
+          role: 'frame'
+        });
+        this.root.items = [new GroupItem(this.root)];
+      }
     }
-  }
-  Scenegraph.prototype = {
     toJSON(indent) {
       return sceneToJSON(this.root, indent || 0);
-    },
+    }
     mark(markdef, group, index) {
       group = group || this.root.items[0];
       const mark = createMark(markdef, group);
@@ -17367,7 +17352,7 @@
       if (mark.zindex) mark.group.zdirty = true;
       return mark;
     }
-  };
+  }
   function createMark(def, group) {
     const mark = {
       bounds: new Bounds(),
@@ -17455,29 +17440,23 @@
     }
     return item;
   }
+  class Handler {
+    /**
+     * Create a new Handler instance.
+     * @param {object} [customLoader] - Optional loader instance for
+     *   href URL sanitization. If not specified, a standard loader
+     *   instance will be generated.
+     * @param {function} [customTooltip] - Optional tooltip handler
+     *   function for custom tooltip display.
+     * @constructor
+     */
+    constructor(customLoader, customTooltip) {
+      this._active = null;
+      this._handlers = {};
+      this._loader = customLoader || loader();
+      this._tooltip = customTooltip || defaultTooltip$1;
+    }
 
-  /**
-   * Create a new Handler instance.
-   * @param {object} [customLoader] - Optional loader instance for
-   *   href URL sanitization. If not specified, a standard loader
-   *   instance will be generated.
-   * @param {function} [customTooltip] - Optional tooltip handler
-   *   function for custom tooltip display.
-   * @constructor
-   */
-  function Handler(customLoader, customTooltip) {
-    this._active = null;
-    this._handlers = {};
-    this._loader = customLoader || loader();
-    this._tooltip = customTooltip || defaultTooltip$1;
-  }
-
-  // The default tooltip display handler.
-  // Sets the HTML title attribute on the visualization container.
-  function defaultTooltip$1(handler, event, item, value) {
-    handler.element().setAttribute('title', value || '');
-  }
-  Handler.prototype = {
     /**
      * Initialize a new Handler instance.
      * @param {DOMElement} el - The containing DOM element for the display.
@@ -17491,14 +17470,16 @@
       this._el = el;
       this._obj = obj || null;
       return this.origin(origin);
-    },
+    }
+
     /**
      * Returns the parent container element for a visualization.
      * @return {DOMElement} - The containing DOM element.
      */
     element() {
       return this._el;
-    },
+    }
+
     /**
      * Returns the scene element (e.g., canvas or SVG) of the visualization
      * Subclasses must override if the first child is not the scene element.
@@ -17506,7 +17487,8 @@
      */
     canvas() {
       return this._el && this._el.firstChild;
-    },
+    }
+
     /**
      * Get / set the origin coordinates of the visualization.
      */
@@ -17517,7 +17499,8 @@
       } else {
         return this._origin.slice();
       }
-    },
+    }
+
     /**
      * Get / set the scenegraph root.
      */
@@ -17525,15 +17508,18 @@
       if (!arguments.length) return this._scene;
       this._scene = scene;
       return this;
-    },
+    }
+
     /**
      * Add an event handler. Subclasses should override this method.
      */
-    on( /*type, handler*/) {},
+    on( /*type, handler*/) {}
+
     /**
      * Remove an event handler. Subclasses should override this method.
      */
-    off( /*type, handler*/) {},
+    off( /*type, handler*/) {}
+
     /**
      * Utility method for finding the array index of an event handler.
      * @param {Array} h - An array of registered event handlers.
@@ -17548,7 +17534,8 @@
         }
       }
       return -1;
-    },
+    }
+
     /**
      * Returns an array with registered event handlers.
      * @param {string} [type] - The event type to query. Any annotations
@@ -17568,7 +17555,8 @@
         }
       }
       return a;
-    },
+    }
+
     /**
      * Parses an event name string to return the specific event type.
      * For example, given "click.foo" returns "click"
@@ -17578,7 +17566,8 @@
     eventName(name) {
       const i = name.indexOf('.');
       return i < 0 ? name : name.slice(0, i);
-    },
+    }
+
     /**
      * Handle hyperlink navigation in response to an item.href value.
      * @param {Event} event - The event triggering hyperlink navigation.
@@ -17593,8 +17582,9 @@
           a = domCreate(null, 'a');
         for (const name in opt) a.setAttribute(name, opt[name]);
         a.dispatchEvent(e);
-      }).catch(() => {/* do nothing */});
-    },
+      }).catch(() => {});
+    }
+
     /**
      * Handle tooltip display in response to an item.tooltip value.
      * @param {Event} event - The event triggering tooltip display.
@@ -17608,7 +17598,8 @@
         const value = show && item && item.tooltip || null;
         this._tooltip.call(this._obj, this, event, item, value);
       }
-    },
+    }
+
     /**
      * Returns the size of a scenegraph item and its position relative
      * to the viewport.
@@ -17646,21 +17637,27 @@
         bottom: y + height
       };
     }
-  };
-
-  /**
-   * Create a new Renderer instance.
-   * @param {object} [loader] - Optional loader instance for
-   *   image and href URL sanitization. If not specified, a
-   *   standard loader instance will be generated.
-   * @constructor
-   */
-  function Renderer(loader) {
-    this._el = null;
-    this._bgcolor = null;
-    this._loader = new ResourceLoader(loader);
   }
-  Renderer.prototype = {
+
+  // The default tooltip display handler.
+  // Sets the HTML title attribute on the visualization container.
+  function defaultTooltip$1(handler, event, item, value) {
+    handler.element().setAttribute('title', value || '');
+  }
+  class Renderer {
+    /**
+     * Create a new Renderer instance.
+     * @param {object} [loader] - Optional loader instance for
+     *   image and href URL sanitization. If not specified, a
+     *   standard loader instance will be generated.
+     * @constructor
+     */
+    constructor(loader) {
+      this._el = null;
+      this._bgcolor = null;
+      this._loader = new ResourceLoader(loader);
+    }
+
     /**
      * Initialize a new Renderer instance.
      * @param {DOMElement} el - The containing DOM element for the display.
@@ -17675,14 +17672,16 @@
     initialize(el, width, height, origin, scaleFactor) {
       this._el = el;
       return this.resize(width, height, origin, scaleFactor);
-    },
+    }
+
     /**
      * Returns the parent container element for a visualization.
      * @return {DOMElement} - The containing DOM element.
      */
     element() {
       return this._el;
-    },
+    }
+
     /**
      * Returns the scene element (e.g., canvas or SVG) of the visualization
      * Subclasses must override if the first child is not the scene element.
@@ -17690,7 +17689,8 @@
      */
     canvas() {
       return this._el && this._el.firstChild;
-    },
+    }
+
     /**
      * Get / set the background color.
      */
@@ -17698,7 +17698,8 @@
       if (arguments.length === 0) return this._bgcolor;
       this._bgcolor = bgcolor;
       return this;
-    },
+    }
+
     /**
      * Resize the display.
      * @param {number} width - The new coordinate width of the display, in pixels.
@@ -17715,14 +17716,16 @@
       this._origin = origin || [0, 0];
       this._scale = scaleFactor || 1;
       return this;
-    },
+    }
+
     /**
      * Report a dirty item whose bounds should be redrawn.
      * This base class method does nothing. Subclasses that perform
      * incremental should implement this method.
      * @param {Item} item - The dirty item whose bounds should be redrawn.
      */
-    dirty( /*item*/) {},
+    dirty( /*item*/) {}
+
     /**
      * Render an input scenegraph, potentially with a set of dirty items.
      * This method will perform an immediate rendering with available resources.
@@ -17751,7 +17754,8 @@
       // async redraws will stash their own copy
       r._call = null;
       return r;
-    },
+    }
+
     /**
      * Internal rendering method. Renderer subclasses should override this
      * method to actually perform rendering.
@@ -17762,7 +17766,8 @@
     _render( /*scene, markTypes*/
     ) {
       // subclasses to override
-    },
+    }
+
     /**
      * Asynchronous rendering method. Similar to render, but returns a Promise
      * that resolves when all rendering is completed. Sometimes a renderer must
@@ -17776,7 +17781,8 @@
     renderAsync(scene, markTypes) {
       const r = this.render(scene, markTypes);
       return this._ready ? this._ready.then(() => r) : Promise.resolve(r);
-    },
+    }
+
     /**
      * Internal method for asynchronous resource loading.
      * Proxies method calls to the ImageLoader, and tracks loading
@@ -17797,7 +17803,8 @@
         });
       }
       return p;
-    },
+    }
+
     /**
      * Sanitize a URL to include as a hyperlink in the rendered scene.
      * This method proxies a call to ImageLoader.sanitizeURL, but also tracks
@@ -17807,7 +17814,8 @@
      */
     sanitizeURL(uri) {
       return this._load('sanitizeURL', uri);
-    },
+    }
+
     /**
      * Requests an image to include in the rendered scene.
      * This method proxies a call to ImageLoader.loadImage, but also tracks
@@ -17818,7 +17826,7 @@
     loadImage(uri) {
       return this._load('loadImage', uri);
     }
-  };
+  }
   const KeyDownEvent = 'keydown';
   const KeyPressEvent = 'keypress';
   const KeyUpEvent = 'keyup';
@@ -17846,12 +17854,135 @@
   const TooltipShowEvent = PointerMoveEvent;
   const TooltipHideEvent = PointerOutEvent;
   const HrefEvent = ClickEvent;
-  function CanvasHandler(loader, tooltip) {
-    Handler.call(this, loader, tooltip);
-    this._down = null;
-    this._touch = null;
-    this._first = true;
-    this._events = {};
+  class CanvasHandler extends Handler {
+    constructor(loader, tooltip) {
+      super(loader, tooltip);
+      this._down = null;
+      this._touch = null;
+      this._first = true;
+      this._events = {};
+
+      // supported events
+      this.events = Events;
+      this.pointermove = move([PointerMoveEvent, MouseMoveEvent], [PointerOverEvent, MouseOverEvent], [PointerOutEvent, MouseOutEvent]);
+      this.dragover = move([DragOverEvent], [DragEnterEvent], [DragLeaveEvent]), this.pointerout = inactive([PointerOutEvent, MouseOutEvent]);
+      this.dragleave = inactive([DragLeaveEvent]);
+    }
+    initialize(el, origin, obj) {
+      this._canvas = el && domFind(el, 'canvas');
+
+      // add minimal events required for proper state management
+      [ClickEvent, MouseDownEvent, PointerDownEvent, PointerMoveEvent, PointerOutEvent, DragLeaveEvent].forEach(type => eventListenerCheck(this, type));
+      return super.initialize(el, origin, obj);
+    }
+
+    // return the backing canvas instance
+    canvas() {
+      return this._canvas;
+    }
+
+    // retrieve the current canvas context
+    context() {
+      return this._canvas.getContext('2d');
+    }
+
+    // to keep old versions of firefox happy
+    DOMMouseScroll(evt) {
+      this.fire(MouseWheelEvent, evt);
+    }
+    pointerdown(evt) {
+      this._down = this._active;
+      this.fire(PointerDownEvent, evt);
+    }
+    mousedown(evt) {
+      this._down = this._active;
+      this.fire(MouseDownEvent, evt);
+    }
+    click(evt) {
+      if (this._down === this._active) {
+        this.fire(ClickEvent, evt);
+        this._down = null;
+      }
+    }
+    touchstart(evt) {
+      this._touch = this.pickEvent(evt.changedTouches[0]);
+      if (this._first) {
+        this._active = this._touch;
+        this._first = false;
+      }
+      this.fire(TouchStartEvent, evt, true);
+    }
+    touchmove(evt) {
+      this.fire(TouchMoveEvent, evt, true);
+    }
+    touchend(evt) {
+      this.fire(TouchEndEvent, evt, true);
+      this._touch = null;
+    }
+
+    // fire an event
+    fire(type, evt, touch) {
+      const a = touch ? this._touch : this._active,
+        h = this._handlers[type];
+
+      // set event type relative to scenegraph items
+      evt.vegaType = type;
+
+      // handle hyperlinks and tooltips first
+      if (type === HrefEvent && a && a.href) {
+        this.handleHref(evt, a, a.href);
+      } else if (type === TooltipShowEvent || type === TooltipHideEvent) {
+        this.handleTooltip(evt, a, type !== TooltipHideEvent);
+      }
+
+      // invoke all registered handlers
+      if (h) {
+        for (let i = 0, len = h.length; i < len; ++i) {
+          h[i].handler.call(this._obj, evt, a);
+        }
+      }
+    }
+
+    // add an event handler
+    on(type, handler) {
+      const name = this.eventName(type),
+        h = this._handlers,
+        i = this._handlerIndex(h[name], type, handler);
+      if (i < 0) {
+        eventListenerCheck(this, type);
+        (h[name] || (h[name] = [])).push({
+          type: type,
+          handler: handler
+        });
+      }
+      return this;
+    }
+
+    // remove an event handler
+    off(type, handler) {
+      const name = this.eventName(type),
+        h = this._handlers[name],
+        i = this._handlerIndex(h, type, handler);
+      if (i >= 0) {
+        h.splice(i, 1);
+      }
+      return this;
+    }
+    pickEvent(evt) {
+      const p = point(evt, this._canvas),
+        o = this._origin;
+      return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
+    }
+
+    // find the scenegraph item at the current pointer position
+    // x, y -- the absolute x, y pointer coordinates on the canvas element
+    // gx, gy -- the relative coordinates within the current group
+    pick(scene, x, y, gx, gy) {
+      console.log(22222);
+      const g = this.context(),
+        mark = Marks[scene.marktype];
+      return mark.pick.call(this, g, scene, x, y, gx, gy);
+    }
   }
   const eventBundle = type => type === TouchStartEvent || type === TouchMoveEvent || type === TouchEndEvent ? [TouchStartEvent, TouchMoveEvent, TouchEndEvent] : [type];
 
@@ -17889,128 +18020,12 @@
       }
     };
   }
-
   function inactive(types) {
     return function (evt) {
       fireAll(this, types, evt);
       this._active = null;
     };
   }
-  inherits(CanvasHandler, Handler, {
-    initialize(el, origin, obj) {
-      this._canvas = el && domFind(el, 'canvas');
-
-      // add minimal events required for proper state management
-      [ClickEvent, MouseDownEvent, PointerDownEvent, PointerMoveEvent, PointerOutEvent, DragLeaveEvent].forEach(type => eventListenerCheck(this, type));
-      return Handler.prototype.initialize.call(this, el, origin, obj);
-    },
-    // return the backing canvas instance
-    canvas() {
-      return this._canvas;
-    },
-    // retrieve the current canvas context
-    context() {
-      return this._canvas.getContext('2d');
-    },
-    // supported events
-    events: Events,
-    // to keep old versions of firefox happy
-    DOMMouseScroll(evt) {
-      this.fire(MouseWheelEvent, evt);
-    },
-    pointermove: move([PointerMoveEvent, MouseMoveEvent], [PointerOverEvent, MouseOverEvent], [PointerOutEvent, MouseOutEvent]),
-    dragover: move([DragOverEvent], [DragEnterEvent], [DragLeaveEvent]),
-    pointerout: inactive([PointerOutEvent, MouseOutEvent]),
-    dragleave: inactive([DragLeaveEvent]),
-    pointerdown(evt) {
-      this._down = this._active;
-      this.fire(PointerDownEvent, evt);
-    },
-    mousedown(evt) {
-      this._down = this._active;
-      this.fire(MouseDownEvent, evt);
-    },
-    click(evt) {
-      if (this._down === this._active) {
-        this.fire(ClickEvent, evt);
-        this._down = null;
-      }
-    },
-    touchstart(evt) {
-      this._touch = this.pickEvent(evt.changedTouches[0]);
-      if (this._first) {
-        this._active = this._touch;
-        this._first = false;
-      }
-      this.fire(TouchStartEvent, evt, true);
-    },
-    touchmove(evt) {
-      this.fire(TouchMoveEvent, evt, true);
-    },
-    touchend(evt) {
-      this.fire(TouchEndEvent, evt, true);
-      this._touch = null;
-    },
-    // fire an event
-    fire(type, evt, touch) {
-      const a = touch ? this._touch : this._active,
-        h = this._handlers[type];
-
-      // set event type relative to scenegraph items
-      evt.vegaType = type;
-
-      // handle hyperlinks and tooltips first
-      if (type === HrefEvent && a && a.href) {
-        this.handleHref(evt, a, a.href);
-      } else if (type === TooltipShowEvent || type === TooltipHideEvent) {
-        this.handleTooltip(evt, a, type !== TooltipHideEvent);
-      }
-
-      // invoke all registered handlers
-      if (h) {
-        for (let i = 0, len = h.length; i < len; ++i) {
-          h[i].handler.call(this._obj, evt, a);
-        }
-      }
-    },
-    // add an event handler
-    on(type, handler) {
-      const name = this.eventName(type),
-        h = this._handlers,
-        i = this._handlerIndex(h[name], type, handler);
-      if (i < 0) {
-        eventListenerCheck(this, type);
-        (h[name] || (h[name] = [])).push({
-          type: type,
-          handler: handler
-        });
-      }
-      return this;
-    },
-    // remove an event handler
-    off(type, handler) {
-      const name = this.eventName(type),
-        h = this._handlers[name],
-        i = this._handlerIndex(h, type, handler);
-      if (i >= 0) {
-        h.splice(i, 1);
-      }
-      return this;
-    },
-    pickEvent(evt) {
-      const p = point(evt, this._canvas),
-        o = this._origin;
-      return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
-    },
-    // find the scenegraph item at the current pointer position
-    // x, y -- the absolute x, y pointer coordinates on the canvas element
-    // gx, gy -- the relative coordinates within the current group
-    pick(scene, x, y, gx, gy) {
-      const g = this.context(),
-        mark = Marks[scene.marktype];
-      return mark.pick.call(this, g, scene, x, y, gx, gy);
-    }
-  });
   function devicePixelRatio() {
     return typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
   }
@@ -18031,34 +18046,14 @@
     context.setTransform(ratio, 0, 0, ratio, ratio * origin[0], ratio * origin[1]);
     return canvas;
   }
-  function CanvasRenderer(loader) {
-    Renderer.call(this, loader);
-    this._options = {};
-    this._redraw = false;
-    this._dirty = new Bounds();
-    this._tempb = new Bounds();
-  }
-  const base$2 = Renderer.prototype;
-  const viewBounds = (origin, width, height) => new Bounds().set(0, 0, width, height).translate(-origin[0], -origin[1]);
-  function clipToBounds(g, b, origin) {
-    // expand bounds by 1 pixel, then round to pixel boundaries
-    b.expand(1).round();
-
-    // align to base pixel grid in case of non-integer scaling (#2425)
-    if (g.pixelRatio % 1) {
-      b.scale(g.pixelRatio).round().scale(1 / g.pixelRatio);
+  class CanvasRenderer extends Renderer {
+    constructor(loader) {
+      super(loader);
+      this._options = {};
+      this._redraw = false;
+      this._dirty = new Bounds();
+      this._tempb = new Bounds();
     }
-
-    // to avoid artifacts translate if origin has fractional pixels
-    b.translate(-(origin[0] % 1), -(origin[1] % 1));
-
-    // set clip path
-    g.beginPath();
-    g.rect(b.x1, b.y1, b.width(), b.height());
-    g.clip();
-    return b;
-  }
-  inherits(CanvasRenderer, Renderer, {
     initialize(el, width, height, origin, scaleFactor, options) {
       this._options = options || {};
       this._canvas = this._options.externalContext ? null : domCanvas(1, 1, this._options.type); // instantiate a small canvas
@@ -18069,10 +18064,10 @@
       }
 
       // this method will invoke resize to size the canvas appropriately
-      return base$2.initialize.call(this, el, width, height, origin, scaleFactor);
-    },
+      return super.initialize(el, width, height, origin, scaleFactor);
+    }
     resize(width, height, origin, scaleFactor) {
-      base$2.resize.call(this, width, height, origin, scaleFactor);
+      super.resize(width, height, origin, scaleFactor);
       if (this._canvas) {
         // configure canvas size and transform
         resize(this._canvas, this._width, this._height, this._origin, this._scale, this._options.context);
@@ -18085,13 +18080,13 @@
       }
       this._redraw = true;
       return this;
-    },
+    }
     canvas() {
       return this._canvas;
-    },
+    }
     context() {
       return this._options.externalContext || (this._canvas ? this._canvas.getContext('2d') : null);
-    },
+    }
     dirty(item) {
       const b = this._tempb.clear().union(item.bounds);
       let g = item.mark.group;
@@ -18100,7 +18095,7 @@
         g = g.mark.group;
       }
       this._dirty.union(b);
-    },
+    }
     _render(scene, markTypes) {
       const g = this.context(),
         o = this._origin,
@@ -18121,7 +18116,7 @@
       g.restore();
       db.clear();
       return this;
-    },
+    }
     draw(ctx, scene, bounds, markTypes) {
       if (scene.marktype !== 'group' && markTypes != null && !markTypes.includes(scene.marktype)) {
         return;
@@ -18130,7 +18125,7 @@
       if (scene.clip) clip$2(ctx, scene);
       mark.draw.call(this, ctx, scene, bounds, markTypes);
       if (scene.clip) ctx.restore();
-    },
+    }
     clear(x, y, w, h) {
       const opt = this._options,
         g = this.context();
@@ -18144,26 +18139,37 @@
         g.fillRect(x, y, w, h);
       }
     }
-  });
-  function SVGHandler(loader, tooltip) {
-    Handler.call(this, loader, tooltip);
-    const h = this;
-    h._hrefHandler = listener(h, (evt, item) => {
-      if (item && item.href) h.handleHref(evt, item, item.href);
-    });
-    h._tooltipHandler = listener(h, (evt, item) => {
-      h.handleTooltip(evt, item, evt.type !== TooltipHideEvent);
-    });
   }
+  const viewBounds = (origin, width, height) => new Bounds().set(0, 0, width, height).translate(-origin[0], -origin[1]);
+  function clipToBounds(g, b, origin) {
+    // expand bounds by 1 pixel, then round to pixel boundaries
+    b.expand(1).round();
 
-  // wrap an event listener for the SVG DOM
-  const listener = (context, handler) => evt => {
-    let item = evt.target.__data__;
-    item = Array.isArray(item) ? item[0] : item;
-    evt.vegaType = evt.type;
-    handler.call(context._obj, evt, item);
-  };
-  inherits(SVGHandler, Handler, {
+    // align to base pixel grid in case of non-integer scaling (#2425)
+    if (g.pixelRatio % 1) {
+      b.scale(g.pixelRatio).round().scale(1 / g.pixelRatio);
+    }
+
+    // to avoid artifacts translate if origin has fractional pixels
+    b.translate(-(origin[0] % 1), -(origin[1] % 1));
+
+    // set clip path
+    g.beginPath();
+    g.rect(b.x1, b.y1, b.width(), b.height());
+    g.clip();
+    return b;
+  }
+  class SVGHandler extends Handler {
+    constructor(loader, tooltip) {
+      super(loader, tooltip);
+      const h = this;
+      h._hrefHandler = listener(h, (evt, item) => {
+        if (item && item.href) h.handleHref(evt, item, item.href);
+      });
+      h._tooltipHandler = listener(h, (evt, item) => {
+        h.handleTooltip(evt, item, evt.type !== TooltipHideEvent);
+      });
+    }
     initialize(el, origin, obj) {
       let svg = this._svg;
       if (svg) {
@@ -18177,11 +18183,12 @@
         svg.addEventListener(TooltipShowEvent, this._tooltipHandler);
         svg.addEventListener(TooltipHideEvent, this._tooltipHandler);
       }
-      return Handler.prototype.initialize.call(this, el, origin, obj);
-    },
+      return super.initialize(el, origin, obj);
+    }
     canvas() {
       return this._svg;
-    },
+    }
+
     // add an event handler
     on(type, handler) {
       const name = this.eventName(type),
@@ -18199,7 +18206,8 @@
         }
       }
       return this;
-    },
+    }
+
     // remove an event handler
     off(type, handler) {
       const name = this.eventName(type),
@@ -18213,7 +18221,15 @@
       }
       return this;
     }
-  });
+  }
+
+  // wrap an event listener for the SVG DOM
+  const listener = (context, handler) => evt => {
+    let item = evt.target.__data__;
+    item = Array.isArray(item) ? item[0] : item;
+    evt.vegaType = evt.type;
+    handler.call(context._obj, evt, item);
+  };
   const ARIA_HIDDEN = 'aria-hidden';
   const ARIA_LABEL = 'aria-label';
   const ARIA_ROLE = 'role';
@@ -18419,16 +18435,16 @@
   const RootIndex = 0,
     xmlns = 'http://www.w3.org/2000/xmlns/',
     svgns = metadata.xmlns;
-  function SVGRenderer(loader) {
-    Renderer.call(this, loader);
-    this._dirtyID = 0;
-    this._dirty = [];
-    this._svg = null;
-    this._root = null;
-    this._defs = null;
-  }
-  const base$1 = Renderer.prototype;
-  inherits(SVGRenderer, Renderer, {
+  class SVGRenderer extends Renderer {
+    constructor(loader) {
+      super(loader);
+      this._dirtyID = 0;
+      this._dirty = [];
+      this._svg = null;
+      this._root = null;
+      this._defs = null;
+    }
+
     /**
      * Initialize a new SVGRenderer instance.
      * @param {DOMElement} el - The containing DOM element for the display.
@@ -18462,8 +18478,9 @@
 
       // set background color if defined
       this.background(this._bgcolor);
-      return base$1.initialize.call(this, el, width, height, origin, scaleFactor);
-    },
+      return super.initialize(el, width, height, origin, scaleFactor);
+    }
+
     /**
      * Get / set the background color.
      */
@@ -18471,8 +18488,9 @@
       if (arguments.length && this._svg) {
         this._svg.style.setProperty('background-color', bgcolor);
       }
-      return base$1.background.apply(this, arguments);
-    },
+      return super.background(...arguments);
+    }
+
     /**
      * Resize the display.
      * @param {number} width - The new coordinate width of the display, in pixels.
@@ -18484,7 +18502,7 @@
      * @return {SVGRenderer} - This renderer instance;
      */
     resize(width, height, origin, scaleFactor) {
-      base$1.resize.call(this, width, height, origin, scaleFactor);
+      super.resize(width, height, origin, scaleFactor);
       if (this._svg) {
         setAttributes(this._svg, {
           width: this._width * this._scale,
@@ -18495,14 +18513,16 @@
       }
       this._dirty = [];
       return this;
-    },
+    }
+
     /**
      * Returns the SVG element of the visualization.
      * @return {DOMElement} - The SVG element.
      */
     canvas() {
       return this._svg;
-    },
+    }
+
     /**
      * Returns an SVG text string for the rendered content,
      * or null if this renderer is currently headless.
@@ -18527,7 +18547,8 @@
         this._svg.style.setProperty('background-color', bg);
       }
       return text;
-    },
+    }
+
     /**
      * Internal rendering method.
      * @param {object} scene - The root mark of a scenegraph to render.
@@ -18545,7 +18566,8 @@
       this._dirty = [];
       ++this._dirtyID;
       return this;
-    },
+    }
+
     // -- Manage rendering of items marked as dirty --
 
     /**
@@ -18557,14 +18579,16 @@
         item.dirty = this._dirtyID;
         this._dirty.push(item);
       }
-    },
+    }
+
     /**
      * Check if a mark item is considered dirty.
      * @param {Item} item - The mark item.
      */
     isDirty(item) {
       return this._dirtyAll || !item._svg || !item._svg.ownerSVGElement || item.dirty === this._dirtyID;
-    },
+    }
+
     /**
      * Internal method to check dirty status and, if possible,
      * make targetted updates without a full rendering pass.
@@ -18620,7 +18644,8 @@
         item._update = id;
       }
       return !this._dirtyAll;
-    },
+    }
+
     // -- Construct & maintain scenegraph to SVG mapping ---
 
     /**
@@ -18673,7 +18698,8 @@
       }
       domClear(parent, i);
       return parent;
-    },
+    }
+
     /**
      * Update the attributes of an SVG element for a mark item.
      * @param {object} mdef - The mark definition object
@@ -18699,7 +18725,8 @@
       // apply svg style attributes
       // note: element state may have been modified by 'extra' method
       if (element$1) this.style(element$1, item);
-    },
+    }
+
     /**
      * Update the presentation attributes of an SVG element for a mark item.
      * @param {SVGElement} el - The SVG element.
@@ -18724,7 +18751,8 @@
       for (const prop in stylesCss) {
         setStyle(el, stylesCss[prop], item[prop]);
       }
-    },
+    }
+
     /**
      * Render SVG defs, as needed.
      * Must be called *after* marks have been processed to ensure the
@@ -18748,7 +18776,8 @@
       if (el) {
         index === 0 ? (svg.removeChild(el), defs.el = null) : domClear(el, index);
       }
-    },
+    }
+
     /**
      * Clear defs caches.
      */
@@ -18757,7 +18786,7 @@
       def.gradient = {};
       def.clipping = {};
     }
-  });
+  }
 
   // mark ancestor chain with a dirty id
   function dirtyParents(item, id) {
@@ -19046,22 +19075,24 @@
     let loc;
     return typeof window === 'undefined' ? '' : (loc = window.location).hash ? loc.href.slice(0, -loc.hash.length) : loc.href;
   }
-  function SVGStringRenderer(loader) {
-    Renderer.call(this, loader);
-    this._text = null;
-    this._defs = {
-      gradient: {},
-      clipping: {}
-    };
-  }
-  inherits(SVGStringRenderer, Renderer, {
+  class SVGStringRenderer extends Renderer {
+    constructor(loader) {
+      super(loader);
+      this._text = null;
+      this._defs = {
+        gradient: {},
+        clipping: {}
+      };
+    }
+
     /**
      * Returns the rendered SVG text string,
      * or null if rendering has not yet occurred.
      */
     svg() {
       return this._text;
-    },
+    }
+
     /**
      * Internal rendering method.
      * @param {object} scene - The root mark of a scenegraph to render.
@@ -19100,7 +19131,8 @@
       // get SVG text string
       this._text = m.close() + '';
       return this;
-    },
+    }
+
     /**
      * Render a set of mark items.
      * @param {object} m - The markup context.
@@ -19164,7 +19196,6 @@
         m.close(); // </tag>
         if (href) m.close(); // </a>
       };
-
       if (mdef.nested) {
         if (scene.items && scene.items.length) process(scene.items[0]);
       } else {
@@ -19173,7 +19204,7 @@
 
       // render closing group tag
       return m.close(); // </g>
-    },
+    }
 
     /**
      * Get href attributes for a hyperlinked mark item.
@@ -19195,7 +19226,8 @@
         }
       }
       return null;
-    },
+    }
+
     /**
      * Get an object of SVG attributes for a mark item.
      * @param {object} scene - The mark parent.
@@ -19221,7 +19253,8 @@
         style(object, item, scene, tag, this._defs);
       }
       return object;
-    },
+    }
+
     /**
      * Render SVG defs, as needed.
      * Must be called *after* marks have been processed to ensure the
@@ -19305,7 +19338,7 @@
       }
       m.close();
     }
-  });
+  }
 
   // Helper function for attr for style presentation attributes
   function style(s, item, scene, tag, defs) {
@@ -19383,13 +19416,13 @@
     OPTS['svgOnTop'] = options.svgOnTop ?? true;
     OPTS['debug'] = options.debug ?? false;
   }
-  function HybridRenderer(loader) {
-    Renderer.call(this, loader);
-    this._svgRenderer = new SVGRenderer(loader);
-    this._canvasRenderer = new CanvasRenderer(loader);
-  }
-  const base = Renderer.prototype;
-  inherits(HybridRenderer, Renderer, {
+  class HybridRenderer extends Renderer {
+    constructor(loader) {
+      super(loader);
+      this._svgRenderer = new SVGRenderer(loader);
+      this._canvasRenderer = new CanvasRenderer(loader);
+    }
+
     /**
      * Initialize a new HybridRenderer instance.
      * @param {DOMElement} el - The containing DOM element for the display.
@@ -19423,8 +19456,9 @@
       this._svgEl.style.pointerEvents = 'none';
       this._canvasRenderer.initialize(this._canvasEl, width, height, origin, scaleFactor);
       this._svgRenderer.initialize(this._svgEl, width, height, origin, scaleFactor);
-      return base.initialize.call(this, el, width, height, origin, scaleFactor);
-    },
+      return super.initialize(el, width, height, origin, scaleFactor);
+    }
+
     /**
      * Flag a mark item as dirty.
      * @param {Item} item - The mark item.
@@ -19436,7 +19470,8 @@
         this._canvasRenderer.dirty(item);
       }
       return this;
-    },
+    }
+
     /**
      * Internal rendering method.
      * @param {object} scene - The root mark of a scenegraph to render.
@@ -19448,7 +19483,8 @@
       const canvasMarkTypes = allMarkTypes.filter(m => !OPTS.svgMarkTypes.includes(m));
       this._svgRenderer.render(scene, OPTS.svgMarkTypes);
       this._canvasRenderer.render(scene, canvasMarkTypes);
-    },
+    }
+
     /**
      * Resize the display.
      * @param {number} width - The new coordinate width of the display, in pixels.
@@ -19460,11 +19496,11 @@
      * @return {SVGRenderer} - This renderer instance;
      */
     resize(width, height, origin, scaleFactor) {
-      base.resize.call(this, width, height, origin, scaleFactor);
+      super.resize(width, height, origin, scaleFactor);
       this._svgRenderer.resize(width, height, origin, scaleFactor);
       this._canvasRenderer.resize(width, height, origin, scaleFactor);
       return this;
-    },
+    }
     background(bgcolor) {
       // Propagate background color to lower canvas renderer
       if (OPTS.svgOnTop) {
@@ -19474,16 +19510,16 @@
       }
       return this;
     }
-  });
-  function HybridHandler(loader, tooltip) {
-    CanvasHandler.call(this, loader, tooltip);
   }
-  inherits(HybridHandler, CanvasHandler, {
+  class HybridHandler extends CanvasHandler {
+    constructor(loader, tooltip) {
+      super(loader, tooltip);
+    }
     initialize(el, origin, obj) {
       const canvas = domChild(domChild(el, 0, 'div'), OPTS.svgOnTop ? 0 : 1, 'div');
-      return CanvasHandler.prototype.initialize.call(this, canvas, origin, obj);
+      return super.initialize(canvas, origin, obj);
     }
-  });
+  }
   const Canvas = 'canvas';
   const Hybrid = 'hybrid';
   const PNG = 'png';
@@ -19968,7 +20004,6 @@
     index + +datum.domain // title index
     ];
   }
-
   function axisLayout(view, axis, width, height) {
     var item = axis.items[0],
       datum = item.datum,
@@ -21473,7 +21508,6 @@
     Transform.call(this, null, params);
     this.modified(true); // always treat as modified
   }
-
   inherits(Scale$1, Transform, {
     transform(_, pulse) {
       var df = pulse.dataflow,
@@ -22816,7 +22850,6 @@
       }
     };
   }
-
   function clipAntimeridianIntersect(lambda0, phi0, lambda1, phi1) {
     var cosPhi0,
       cosPhi1,
@@ -23086,7 +23119,6 @@
     function corner(p, direction) {
       return abs$1(p[0] - x0) < epsilon$3 ? direction > 0 ? 0 : 3 : abs$1(p[0] - x1) < epsilon$3 ? direction > 0 ? 2 : 1 : abs$1(p[1] - y0) < epsilon$3 ? direction > 0 ? 1 : 0 : direction > 0 ? 3 : 2; // abs(p[1] - y1) < epsilon
     }
-
     function compareIntersection(a, b) {
       return comparePoint(a.x, b.x);
     }
@@ -25875,7 +25907,6 @@
     Transform.call(this, null, params);
     this.modified(true); // always treat as modified
   }
-
   inherits(Projection$1, Transform, {
     transform(_, pulse) {
       let proj = this.value;
@@ -27268,7 +27299,6 @@
           change = true;
           sim.tick(); // ensure we run on init
         }
-
         pulse.modifies('index');
       } else {
         if (change) {
@@ -27290,7 +27320,6 @@
           if (!change) return pulse.StopPropagation; // defer to sim ticks
         }
       }
-
       return this.finish(_, pulse);
     },
     finish(_, pulse) {
@@ -27345,7 +27374,6 @@
     for (n = sim.numForces || 0; i < n; ++i) {
       sim.force(Forces + i, null); // remove
     }
-
     sim.numForces = f.length;
     return sim;
   }
@@ -27718,7 +27746,6 @@
     return typeof x === "object" && "length" in x ? x // Array, TypedArray, NodeList, array-like
     : Array.from(x); // Map, Set, iterable, string, or anything else
   }
-
   function shuffle(array, random) {
     let m = array.length,
       t,
@@ -28296,7 +28323,6 @@
     this.t = null; // thread
     this.i = i; // number
   }
-
   TreeNode.prototype = Object.create(Node$1.prototype);
   function treeRoot(root) {
     var tree = new TreeNode(root, 0),
@@ -29285,7 +29311,6 @@
         }
       }
     }
-
     return [layer1, layer2];
   }
   function getBuffer(context, width, height) {
@@ -30582,7 +30607,6 @@
     const detleft = (ay - cy) * (bx - cx);
     const detright = (ax - cx) * (by - cy);
     const det = detleft - detright;
-    if (detleft === 0 || detright === 0 || detleft > 0 !== detright > 0) return det;
     const detsum = Math.abs(detleft + detright);
     if (Math.abs(det) >= ccwerrboundA * detsum) return det;
     return -orient2dadapt(ax, ay, bx, by, cx, cy, detsum);
@@ -30618,7 +30642,7 @@
       this._hullPrev = new Uint32Array(n); // edge to prev edge
       this._hullNext = new Uint32Array(n); // edge to next edge
       this._hullTri = new Uint32Array(n); // edge to adjacent triangle
-      this._hullHash = new Int32Array(this._hashSize).fill(-1); // angular edge hash
+      this._hullHash = new Int32Array(this._hashSize); // angular edge hash
 
       // temporary arrays for sorting points
       this._ids = new Uint32Array(n);
@@ -30651,11 +30675,10 @@
       }
       const cx = (minX + maxX) / 2;
       const cy = (minY + maxY) / 2;
-      let minDist = Infinity;
       let i0, i1, i2;
 
       // pick a seed point close to the center
-      for (let i = 0; i < n; i++) {
+      for (let i = 0, minDist = Infinity; i < n; i++) {
         const d = dist(cx, cy, coords[2 * i], coords[2 * i + 1]);
         if (d < minDist) {
           i0 = i;
@@ -30664,10 +30687,9 @@
       }
       const i0x = coords[2 * i0];
       const i0y = coords[2 * i0 + 1];
-      minDist = Infinity;
 
       // find the point closest to the seed
-      for (let i = 0; i < n; i++) {
+      for (let i = 0, minDist = Infinity; i < n; i++) {
         if (i === i0) continue;
         const d = dist(i0x, i0y, coords[2 * i], coords[2 * i + 1]);
         if (d < minDist && d > 0) {
@@ -30701,9 +30723,10 @@
         let j = 0;
         for (let i = 0, d0 = -Infinity; i < n; i++) {
           const id = this._ids[i];
-          if (this._dists[id] > d0) {
+          const d = this._dists[id];
+          if (d > d0) {
             hull[j++] = id;
-            d0 = this._dists[id];
+            d0 = d;
           }
         }
         this.hull = hull.subarray(0, j);
@@ -30932,7 +30955,6 @@
     const p = dx / (Math.abs(dx) + Math.abs(dy));
     return (dy > 0 ? 3 - p : 1 + p) / 4; // [0..1]
   }
-
   function dist(ax, ay, bx, by) {
     const dx = ax - bx;
     const dy = ay - by;
@@ -32400,7 +32422,6 @@
           }
           curr[i] = 0; // clear unused bits
         }
-
         data = copy;
         return reindex;
       },
@@ -32835,7 +32856,6 @@
           output.rem = output.add; // duplicate add/rem for downstream resolve
         }
       }
-
       return mask;
     },
     incrementAll(dim, query, stamp, out) {
@@ -33175,7 +33195,6 @@
   function isDecimalDigit(ch) {
     return ch >= 0x30 && ch <= 0x39; // 0..9
   }
-
   function isHexDigit(ch) {
     return '0123456789abcdefABCDEF'.includes(ch);
   }
@@ -34400,7 +34419,6 @@
     if (match(',')) {
       throw new Error(DISABLED); // no sequence expressions
     }
-
     return expr;
   }
   function parser$1(code) {
@@ -37474,7 +37492,6 @@
           this._globalCursor = !!_;
           if (prev) setCursor(this, prev); // swap cursor
         }
-
         return this;
       } else {
         return this._globalCursor;
@@ -38326,7 +38343,6 @@
       }
       return; // default domain
     }
-
     return domain.signal ? scope.signalRef(domain.signal) : (isArray(domain) ? explicitDomain : domain.fields ? multipleDomain : singularDomain)(domain, spec, scope);
   }
   function explicitDomain(domain, spec, scope) {

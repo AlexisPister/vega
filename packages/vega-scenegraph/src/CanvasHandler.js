@@ -108,6 +108,9 @@ export default class CanvasHandler extends Handler {
     // set event type relative to scenegraph items
     evt.vegaType = type;
 
+    // console.log(evt, type)
+    // console.log(this._handlers, h, type)
+
     // handle hyperlinks and tooltips first
     if (type === HrefEvent && a && a.href) {
       this.handleHref(evt, a, a.href);
@@ -156,6 +159,7 @@ export default class CanvasHandler extends Handler {
   pickEvent(evt) {
     const p = point(evt, this._canvas),
           o = this._origin;
+
     return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
   }
 
@@ -163,6 +167,12 @@ export default class CanvasHandler extends Handler {
   // x, y -- the absolute x, y pointer coordinates on the canvas element
   // gx, gy -- the relative coordinates within the current group
   pick(scene, x, y, gx, gy) {
+
+    // x /= 3;
+    // y /= 3;
+    // gx /= 3;
+    // gy /= 3;
+
     const g = this.context(),
           mark = Marks[scene.marktype];
     return mark.pick.call(this, g, scene, x, y, gx, gy);
@@ -200,8 +210,13 @@ function fireAll(handler, types, event) {
 
 function move(moveEvents, overEvents, outEvents) {
   return function(evt) {
+
+    // console.log("mmm");
+
     const a = this._active,
           p = this.pickEvent(evt);
+
+    // console.log(a, p)
 
     if (p === a) {
       // active item and picked item are the same
