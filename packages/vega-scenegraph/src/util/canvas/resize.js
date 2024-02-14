@@ -2,6 +2,8 @@ function devicePixelRatio() {
   return typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
 }
 
+
+// TODO: works but pixelratio is always 1 now..
 export default function(canvas, width, height, origin, scaleFactor, opt) {
   const inDOM = typeof HTMLElement !== 'undefined'
               && canvas instanceof HTMLElement
@@ -9,7 +11,7 @@ export default function(canvas, width, height, origin, scaleFactor, opt) {
         context = canvas.getContext('2d');
         // ratio = inDOM ? devicePixelRatio() : scaleFactor;
 
-  const ratio = 3;
+  const ratio = scaleFactor;
 
   // canvas.width = width * ratio;
   // canvas.height = height * ratio;
@@ -33,8 +35,6 @@ export default function(canvas, width, height, origin, scaleFactor, opt) {
     ratio * origin[0],
     ratio * origin[1]
   );
-
-  // context.scale(ratio, ratio);
 
   return canvas;
 }

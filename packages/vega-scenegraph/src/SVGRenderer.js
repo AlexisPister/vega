@@ -499,8 +499,10 @@ function recurse(renderer, el, group, markTypes) {
     ++idx;
   });
 
+  // CHANGE
   // remove any extraneous DOM elements
-  domClear(el, 1 + idx);
+  // domClear(el, 1 + idx);
+  domClear(el, idx);
 }
 
 // Bind a scenegraph item to an SVG DOM element.

@@ -125,18 +125,13 @@ function draw(context, scene, bounds, markTypes) {
 
 function pick(context, scene, x, y, gx, gy) {
 
-  // TODO
   if (scene.bounds && !scene.bounds.contains(gx, gy) || !scene.items) {
-    console.log("BN")
     return null;
   }
 
   // TODO
   // const cx = x * context.pixelRatio,
   //       cy = y * context.pixelRatio;
-
-  // const cx = x * 3,
-  //       cy = y * 3;
 
   return pickVisit(scene, group => {
     let hit, dx, dy;
@@ -145,7 +140,6 @@ function pick(context, scene, x, y, gx, gy) {
     const b = group.bounds;
 
     if (b && !b.contains(gx, gy)) {
-      console.log("PVN")
       return;
     }
 
@@ -153,13 +147,11 @@ function pick(context, scene, x, y, gx, gy) {
     dx = group.x || 0;
     dy = group.y || 0;
 
-    console.log("DD", dx, dy)
 
     const dw = dx + (group.width || 0),
           dh = dy + (group.height || 0),
           c = group.clip;
     if (c && (gx < dx || gx > dw || gy < dy || gy > dh)) {
-      console.log("RCN")
       return;
     }
 
@@ -172,7 +164,6 @@ function pick(context, scene, x, y, gx, gy) {
     // test background for rounded corner clip
     if (c && hasCornerRadius(group) && !hitCorner(context, group, cx, cy)) {
       context.restore();
-      console.log("ROUNDED N")
       return null;
     }
 
@@ -182,7 +173,6 @@ function pick(context, scene, x, y, gx, gy) {
     // hit test against group foreground
     if (ix && fore && group.stroke
         && hitForeground(context, group, cx, cy)) {
-      console.log("GROUND N")
       context.restore();
       return group;
     }
@@ -190,7 +180,6 @@ function pick(context, scene, x, y, gx, gy) {
     // hit test against contained marks
     hit = pickVisit(group, mark => pickMark(mark, dx, dy)
       ? this.pick(mark, x, y, dx, dy)
-      // ? this.pick(mark, x * 3, y * 3, dx * 3, dy * 3)
       : null
     );
 

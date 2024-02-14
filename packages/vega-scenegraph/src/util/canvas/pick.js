@@ -16,11 +16,8 @@ export function pick(test) {
         return;
       }
 
-      // console.log(item, x, y, gx, gy, test);
-
       // if in bounding box, perform more careful test
       if (test(context, item, x, y, gx, gy)) {
-        console.log("OOOOK")
         return item;
       }
     });
@@ -41,36 +38,19 @@ export function hitPath(path, filled) {
       context.lineCap   = lc != null ? lc : 'butt';
     }
 
-    // let test =  path(context, o) ? false :
+    // Previous code
+    // return path(context, o) ? false :
     //   (fill && context.isPointInPath(x, y)) ||
     //   (stroke && context.isPointInStroke(x, y));
 
-    // console.log(222, path(context, o), path, context);
-    console.log(path);
-
-    // let test =  path(context, o) ? false :
-    //   (fill && context.isPointInPath(x, y)) ||
-    //   (stroke && context.isPointInStroke(x, y));
-
-
-    // console.log(context.isPointInPath(0, 0))
-    // console.log(context.isPointInPath(3, 3))
-    // console.log(context.isPointInPath(104, 92))
-    // console.log(context.isPointInPath(304, 280))
-    // console.log(context.isPointInStroke(0, 0))
-    // console.log(context.isPointInStroke(3, 3))
-    // console.log(context.isPointInStroke(104, 92))
-    // console.log(context.isPointInStroke(304, 280))
-
-    // console.log(context, lw, lc)
+    // Change: go back from vis to canvas coordinates.
+    const transform = context.getTransform();
+    const scaleFactor = transform.a;
 
     path(context, o);
 
-    // console.log(context.isPointInPath(x * 3, y * 3));
-    // console.log(context.isPointInPath(x, y));
-
-    let test = (fill && context.isPointInPath(x * 3, y * 3)) ||
-      (stroke && context.isPointInStroke(x * 3, y * 3));
+    const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
+      (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
 
     return test;
   };
