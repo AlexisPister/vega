@@ -76,16 +76,17 @@ export default class CanvasRenderer extends Renderer {
   _render(scene, markTypes) {
     const g = this.context(),
           o = this._origin,
+          s = this._scale,
           w = this._width,
           h = this._height,
           db = this._dirty,
-          vb = viewBounds(o, w, h);
+          vb = viewBounds(o, w, h, s);
 
     // setup
     g.save();
     const b = this._redraw || db.empty()
       ? (this._redraw = false, vb.expand(1))
-      : clipToBounds(g, vb.intersect(db), o);
+      : clipToBounds(g, vb.intersect(db), o, s);
 
     this.clear(-o[0], -o[1], w, h);
 
@@ -105,6 +106,7 @@ export default class CanvasRenderer extends Renderer {
     }
 
     const mark = marks[scene.marktype];
+
     if (scene.clip) clip(ctx, scene);
     mark.draw.call(this, ctx, scene, bounds, markTypes);
     if (scene.clip) ctx.restore();
@@ -127,11 +129,12 @@ export default class CanvasRenderer extends Renderer {
   }
 }
 
-const viewBounds = (origin, width, height) => new Bounds()
+const viewBounds = (origin, width, height, scaleFactor) => new Bounds()
   .set(0, 0, width, height)
+  .scale(1 / scaleFactor)
   .translate(-origin[0], -origin[1]);
 
-function clipToBounds(g, b, origin) {
+function clipToBounds(g, b, origin, scaleFactor) {
   // expand bounds by 1 pixel, then round to pixel boundaries
   b.expand(1).round();
 
@@ -139,6 +142,8 @@ function clipToBounds(g, b, origin) {
   if (g.pixelRatio % 1) {
     b.scale(g.pixelRatio).round().scale(1 / g.pixelRatio);
   }
+
+  b.scale(1 / scaleFactor)
 
   // to avoid artifacts translate if origin has fractional pixels
   b.translate(-(origin[0] % 1), -(origin[1] % 1));

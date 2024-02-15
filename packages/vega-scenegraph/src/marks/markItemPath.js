@@ -23,10 +23,6 @@ export default function(type, shape, isect) {
         y = item.y || 0,
         a = item.angle || 0;
 
-    // console.log(shape);
-
-    // NOT WORKING HERE
-
     context.translate(x, y);
     if (a) context.rotate(a *= DegToRad);
     context.beginPath();
