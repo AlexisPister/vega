@@ -44,13 +44,21 @@ export function hitPath(path, filled) {
     //   (stroke && context.isPointInStroke(x, y));
 
     // Change: go back from vis to canvas coordinates.
+    // CHECK HOW TO HANDLE PADDING THERE
     const transform = context.getTransform();
     const scaleFactor = transform.a;
+    const dx = transform.e - (25 * scaleFactor);
+    const dy = transform.f - (25 * scaleFactor);
+
+    const xCanvas = x * scaleFactor + dx;
+    const yCanvas = y * scaleFactor + dy;
 
     path(context, o);
 
-    const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
-      (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
+    // const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
+    //   (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
+    const test = (fill && context.isPointInPath(xCanvas, yCanvas)) ||
+      (stroke && context.isPointInStroke(xCanvas, yCanvas));
 
     return test;
   };
