@@ -49,9 +49,13 @@ export function hitPath(path, filled) {
     const scaleFactor = transform.a;
     const dx = transform.e - (25 * scaleFactor);
     const dy = transform.f - (25 * scaleFactor);
-
     const xCanvas = x * scaleFactor + dx;
     const yCanvas = y * scaleFactor + dy;
+
+    // const dx = transform.e - (25 * scaleFactor * context.pixelRatio);
+    // const dy = transform.f - (25 * scaleFactor * context.pixelRatio);
+    // const xCanvas = x * (scaleFactor * context.pixelRatio) + dx;
+    // const yCanvas = y * (scaleFactor * context.pixelRatio) + dy;
 
     path(context, o);
 

@@ -157,15 +157,15 @@ export default class CanvasHandler extends Handler {
     const p = point(evt, this._canvas),
           o = this._origin;
 
-
     // Change: go from canvas coordinates to vis coordinates
-    const transform = this.context().getTransform();
+    const ctx = this.context();
+    const transform = ctx.getTransform();
     const scaleFactor = transform.a;
-    const dx = transform.e;
-    const dy = transform.f;
+    const dx = transform.e / ctx.pixelRatio;
+    const dy = transform.f / ctx.pixelRatio;
 
-    p[0] = (p[0] - dx) / scaleFactor;
-    p[1] = (p[1] - dy) / scaleFactor;
+    p[0] = (p[0] - dx) * ctx.pixelRatio / scaleFactor;
+    p[1] = (p[1] - dy) * ctx.pixelRatio / scaleFactor;
 
     return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
   }
