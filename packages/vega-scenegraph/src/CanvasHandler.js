@@ -164,8 +164,8 @@ export default class CanvasHandler extends Handler {
     const dx = transform.e;
     const dy = transform.f;
 
-    p[0] = p[0] / scaleFactor - dx / scaleFactor;
-    p[1] = p[1] / scaleFactor - dy / scaleFactor;
+    p[0] = (p[0] - dx) / scaleFactor;
+    p[1] = (p[1] - dy) / scaleFactor;
 
     return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
   }

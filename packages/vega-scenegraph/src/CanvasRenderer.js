@@ -143,7 +143,7 @@ function clipToBounds(g, b, origin, scaleFactor) {
     b.scale(g.pixelRatio).round().scale(1 / g.pixelRatio);
   }
 
-  b.scale(1 / scaleFactor)
+  b.scale(1 / scaleFactor);
 
   // to avoid artifacts translate if origin has fractional pixels
   b.translate(-(origin[0] % 1), -(origin[1] % 1));
