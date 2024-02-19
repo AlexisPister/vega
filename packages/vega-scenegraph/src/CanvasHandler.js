@@ -178,7 +178,6 @@ export default class CanvasHandler extends Handler {
           mark = Marks[scene.marktype];
     return mark.pick.call(this, g, scene, x, y, gx, gy);
   }
-
 }
 
 const eventBundle = type => (
