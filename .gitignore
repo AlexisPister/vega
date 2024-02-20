@@ -12,3 +12,5 @@
 /packages/*/build
 /packages/*/build-es5
 /packages/*/LICENSE
+
+!packages/vega-scenegraph/build
