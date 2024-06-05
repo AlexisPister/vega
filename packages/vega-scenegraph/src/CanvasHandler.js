@@ -157,6 +157,7 @@ export default class CanvasHandler extends Handler {
     const p = point(evt, this._canvas),
           o = this._origin;
 
+    // TODO: check pixelRatio
     // Change: go from canvas coordinates to vis coordinates
     const ctx = this.context();
     const transform = ctx.getTransform();

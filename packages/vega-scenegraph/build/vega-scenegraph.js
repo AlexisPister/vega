@@ -3187,26 +3187,26 @@
       //   (fill && context.isPointInPath(x, y)) ||
       //   (stroke && context.isPointInStroke(x, y));
 
-      // Change: go back from vis to canvas coordinates.
+      // ==== Added: go back from vis to canvas coordinates.
+
       // CHECK HOW TO HANDLE PADDING THERE
-      const transform = context.getTransform();
-      const scaleFactor = transform.a;
-      const dx = transform.e - 25 * scaleFactor;
-      const dy = transform.f - 25 * scaleFactor;
-      const xCanvas = x * scaleFactor + dx;
-      const yCanvas = y * scaleFactor + dy;
+      // const transform = context.getTransform();
+      // const scaleFactor = transform.a;
+      // const dx = transform.e - (25 * scaleFactor);
+      // const dy = transform.f - (25 * scaleFactor);
+      // const xCanvas = x * scaleFactor + dx;
+      // const yCanvas = y * scaleFactor + dy;
 
-      // const dx = transform.e - (25 * scaleFactor * context.pixelRatio);
-      // const dy = transform.f - (25 * scaleFactor * context.pixelRatio);
-      // const xCanvas = x * (scaleFactor * context.pixelRatio) + dx;
-      // const yCanvas = y * (scaleFactor * context.pixelRatio) + dy;
-
+      const origin = context.origin;
+      const scaleFactor = context.scale;
+      const xCanvas = (x + origin[0]) * scaleFactor;
+      const yCanvas = (y + origin[1]) * scaleFactor;
       path(context, o);
 
       // const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
       //   (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
-      const test = fill && context.isPointInPath(xCanvas, yCanvas) || stroke && context.isPointInStroke(xCanvas, yCanvas);
-      return test;
+      const isHitting = fill && context.isPointInPath(xCanvas, yCanvas) || stroke && context.isPointInStroke(xCanvas, yCanvas);
+      return isHitting;
     };
   }
   function pickPath(path) {
@@ -3480,8 +3480,10 @@
     }
 
     // TODO
-    // const cx = x * context.pixelRatio,
-    //       cy = y * context.pixelRatio;
+    const cx = x * context.pixelRatio,
+      cy = y * context.pixelRatio;
+    // const cx = x,
+    //       cy = y;
 
     return pickVisit(scene, group => {
       let hit, dx, dy;
@@ -4809,6 +4811,7 @@
       const p = point(evt, this._canvas),
         o = this._origin;
 
+      // TODO: check pixelRatio
       // Change: go from canvas coordinates to vis coordinates
       const ctx = this.context();
       const transform = ctx.getTransform();
@@ -4872,7 +4875,6 @@
     };
   }
 
-  // TODO: works but pixelratio is always 1 now..
   function resize (canvas, width, height, origin, scaleFactor, opt) {
     const inDOM = typeof HTMLElement !== 'undefined' && canvas instanceof HTMLElement && canvas.parentNode != null,
       context = canvas.getContext('2d');
@@ -4903,6 +4905,10 @@
     // );
 
     scaleFactor *= ratio;
+
+    // Added: need the origin and scale for event detection later (hitpath fct)
+    context.origin = origin;
+    context.scale = scaleFactor;
     context.setTransform(scaleFactor, 0, 0, scaleFactor, scaleFactor * origin[0], scaleFactor * origin[1]);
     return canvas;
   }

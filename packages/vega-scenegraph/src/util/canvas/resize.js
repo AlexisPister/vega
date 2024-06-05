@@ -3,7 +3,6 @@ function devicePixelRatio() {
 }
 
 
-// TODO: works but pixelratio is always 1 now..
 export default function(canvas, width, height, origin, scaleFactor, opt) {
   const inDOM = typeof HTMLElement !== 'undefined'
               && canvas instanceof HTMLElement
@@ -38,6 +37,10 @@ export default function(canvas, width, height, origin, scaleFactor, opt) {
   // );
 
   scaleFactor *= ratio;
+
+  // Added: need the origin and scale for event detection later (hitpath fct)
+  context.origin = origin;
+  context.scale = scaleFactor;
 
   context.setTransform(
     scaleFactor, 0, 0, scaleFactor,

@@ -43,28 +43,30 @@ export function hitPath(path, filled) {
     //   (fill && context.isPointInPath(x, y)) ||
     //   (stroke && context.isPointInStroke(x, y));
 
-    // Change: go back from vis to canvas coordinates.
-    // CHECK HOW TO HANDLE PADDING THERE
-    const transform = context.getTransform();
-    const scaleFactor = transform.a;
-    const dx = transform.e - (25 * scaleFactor);
-    const dy = transform.f - (25 * scaleFactor);
-    const xCanvas = x * scaleFactor + dx;
-    const yCanvas = y * scaleFactor + dy;
 
-    // const dx = transform.e - (25 * scaleFactor * context.pixelRatio);
-    // const dy = transform.f - (25 * scaleFactor * context.pixelRatio);
-    // const xCanvas = x * (scaleFactor * context.pixelRatio) + dx;
-    // const yCanvas = y * (scaleFactor * context.pixelRatio) + dy;
+    // ==== Added: go back from vis to canvas coordinates.
+
+    // CHECK HOW TO HANDLE PADDING THERE
+    // const transform = context.getTransform();
+    // const scaleFactor = transform.a;
+    // const dx = transform.e - (25 * scaleFactor);
+    // const dy = transform.f - (25 * scaleFactor);
+    // const xCanvas = x * scaleFactor + dx;
+    // const yCanvas = y * scaleFactor + dy;
+
+    const origin = context.origin
+    const scaleFactor = context.scale
+
+    const xCanvas = (x + origin[0]) * scaleFactor;
+    const yCanvas = (y + origin[1]) * scaleFactor;
 
     path(context, o);
 
     // const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
     //   (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
-    const test = (fill && context.isPointInPath(xCanvas, yCanvas)) ||
+    const isHitting = (fill && context.isPointInPath(xCanvas, yCanvas)) ||
       (stroke && context.isPointInStroke(xCanvas, yCanvas));
-
-    return test;
+    return isHitting;
   };
 }
 
