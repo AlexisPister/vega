@@ -129,11 +129,11 @@ function pick(context, scene, x, y, gx, gy) {
     return null;
   }
 
-  // TODO
-  const cx = x * context.pixelRatio,
-        cy = y * context.pixelRatio;
-  // const cx = x,
-  //       cy = y;
+  // Added
+  // const cx = x * context.pixelRatio,
+  //       cy = y * context.pixelRatio;
+  const cx = x * context.scale,
+        cy = y * context.scale;
 
   return pickVisit(scene, group => {
     let hit, dx, dy;

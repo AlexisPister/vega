@@ -15520,7 +15520,9 @@
         tr = clamp(+crTR.call(this, _), 0, s),
         bl = clamp(+crBL.call(this, _), 0, s),
         br = clamp(+crBR.call(this, _), 0, s);
-      if (!context) context = buffer = path$3();
+      if (!context) {
+        context = buffer = path$3();
+      }
       if (tl <= 0 && tr <= 0 && bl <= 0 && br <= 0) {
         context.rect(x1, y1, w, h);
       } else {
@@ -16381,17 +16383,21 @@
   function pick$1(test) {
     test = test || truthy;
     return function (context, scene, x, y, gx, gy) {
-      x *= context.pixelRatio;
-      y *= context.pixelRatio;
-      console.log(22222);
+      // x *= context.pixelRatio;
+      // y *= context.pixelRatio;
+
       return pickVisit(scene, item => {
         const b = item.bounds;
+
         // first hit test against bounding box
         if (b && !b.contains(gx, gy) || !b) {
           return;
         }
+
         // if in bounding box, perform more careful test
-        if (test(context, item, x, y, gx, gy)) return item;
+        if (test(context, item, x, y, gx, gy)) {
+          return item;
+        }
       });
     };
   }
@@ -16408,7 +16414,32 @@
         context.lineWidth = lw != null ? lw : 1;
         context.lineCap = lc != null ? lc : 'butt';
       }
-      return path(context, o) ? false : fill && context.isPointInPath(x, y) || stroke && context.isPointInStroke(x, y);
+
+      // Previous code
+      // return path(context, o) ? false :
+      //   (fill && context.isPointInPath(x, y)) ||
+      //   (stroke && context.isPointInStroke(x, y));
+
+      // ==== Added: go back from vis to canvas coordinates.
+
+      // CHECK HOW TO HANDLE PADDING THERE
+      // const transform = context.getTransform();
+      // const scaleFactor = transform.a;
+      // const dx = transform.e - (25 * scaleFactor);
+      // const dy = transform.f - (25 * scaleFactor);
+      // const xCanvas = x * scaleFactor + dx;
+      // const yCanvas = y * scaleFactor + dy;
+
+      const origin = context.origin;
+      const scaleFactor = context.scale;
+      const xCanvas = (x + origin[0]) * scaleFactor;
+      const yCanvas = (y + origin[1]) * scaleFactor;
+      path(context, o);
+
+      // const test = (fill && context.isPointInPath(x * scaleFactor, y * scaleFactor)) ||
+      //   (stroke && context.isPointInStroke(x * scaleFactor, y * scaleFactor));
+      const isHitting = fill && context.isPointInPath(xCanvas, yCanvas) || stroke && context.isPointInStroke(xCanvas, yCanvas);
+      return isHitting;
     };
   }
   function pickPath(path) {
@@ -16534,10 +16565,12 @@
       var items = scene.items,
         b = scene.bounds;
       if (!items || !items.length || b && !b.contains(gx, gy)) {
+        console.log(111);
         return null;
       }
-      x *= context.pixelRatio;
-      y *= context.pixelRatio;
+
+      // x *= context.pixelRatio;
+      // y *= context.pixelRatio;
       return hit(context, items, x, y) ? items[0] : null;
     }
     return {
@@ -16670,14 +16703,20 @@
     if (scene.bounds && !scene.bounds.contains(gx, gy) || !scene.items) {
       return null;
     }
-    const cx = x * context.pixelRatio,
-      cy = y * context.pixelRatio;
+
+    // Added
+    // const cx = x * context.pixelRatio,
+    //       cy = y * context.pixelRatio;
+    const cx = x * context.scale,
+      cy = y * context.scale;
     return pickVisit(scene, group => {
       let hit, dx, dy;
 
       // first hit test bounding box
       const b = group.bounds;
-      if (b && !b.contains(gx, gy)) return;
+      if (b && !b.contains(gx, gy)) {
+        return;
+      }
 
       // passed bounds check, test rectangular clip
       dx = group.x || 0;
@@ -16685,7 +16724,9 @@
       const dw = dx + (group.width || 0),
         dh = dy + (group.height || 0),
         c = group.clip;
-      if (c && (gx < dx || gx > dw || gy < dy || gy > dh)) return;
+      if (c && (gx < dx || gx > dw || gy < dy || gy > dh)) {
+        return;
+      }
 
       // adjust coordinate system
       context.save();
@@ -17422,7 +17463,8 @@
   }
   function point(event, el) {
     const rect = el.getBoundingClientRect();
-    return [event.clientX - rect.left - (el.clientLeft || 0), event.clientY - rect.top - (el.clientTop || 0)];
+    const point = [event.clientX - rect.left - (el.clientLeft || 0), event.clientY - rect.top - (el.clientTop || 0)];
+    return point;
   }
   function resolveItem(item, event, el, origin) {
     var mark = item && item.mark,
@@ -17971,6 +18013,16 @@
     pickEvent(evt) {
       const p = point(evt, this._canvas),
         o = this._origin;
+
+      // TODO: check pixelRatio
+      // Change: go from canvas coordinates to vis coordinates
+      const ctx = this.context();
+      const transform = ctx.getTransform();
+      const scaleFactor = transform.a;
+      const dx = transform.e / ctx.pixelRatio;
+      const dy = transform.f / ctx.pixelRatio;
+      p[0] = (p[0] - dx) * ctx.pixelRatio / scaleFactor;
+      p[1] = (p[1] - dy) * ctx.pixelRatio / scaleFactor;
       return this.pick(this._scene, p[0], p[1], p[0] - o[0], p[1] - o[1]);
     }
 
@@ -17978,7 +18030,6 @@
     // x, y -- the absolute x, y pointer coordinates on the canvas element
     // gx, gy -- the relative coordinates within the current group
     pick(scene, x, y, gx, gy) {
-      console.log(22222);
       const g = this.context(),
         mark = Marks[scene.marktype];
       return mark.pick.call(this, g, scene, x, y, gx, gy);
@@ -18026,15 +18077,18 @@
       this._active = null;
     };
   }
-  function devicePixelRatio() {
-    return typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
-  }
   function resize(canvas, width, height, origin, scaleFactor, opt) {
     const inDOM = typeof HTMLElement !== 'undefined' && canvas instanceof HTMLElement && canvas.parentNode != null,
-      context = canvas.getContext('2d'),
-      ratio = inDOM ? devicePixelRatio() : scaleFactor;
+      context = canvas.getContext('2d');
+    // ratio = inDOM ? devicePixelRatio() : scaleFactor;
+
+    // const ratio = scaleFactor;
+    const ratio = 2;
     canvas.width = width * ratio;
     canvas.height = height * ratio;
+    // canvas.width = width;
+    // canvas.height = height;
+
     for (const key in opt) {
       context[key] = opt[key];
     }
@@ -18042,8 +18096,22 @@
       canvas.style.width = width + 'px';
       canvas.style.height = height + 'px';
     }
+
+    // context.pixelRatio = 1;
     context.pixelRatio = ratio;
-    context.setTransform(ratio, 0, 0, ratio, ratio * origin[0], ratio * origin[1]);
+
+    // context.setTransform(
+    //   ratio, 0, 0, ratio,
+    //   ratio * origin[0],
+    //   ratio * origin[1]
+    // );
+
+    scaleFactor *= ratio;
+
+    // Added: need the origin and scale for event detection later (hitpath fct)
+    context.origin = origin;
+    context.scale = scaleFactor;
+    context.setTransform(scaleFactor, 0, 0, scaleFactor, scaleFactor * origin[0], scaleFactor * origin[1]);
     return canvas;
   }
   class CanvasRenderer extends Renderer {
@@ -18099,14 +18167,15 @@
     _render(scene, markTypes) {
       const g = this.context(),
         o = this._origin,
+        s = this._scale,
         w = this._width,
         h = this._height,
         db = this._dirty,
-        vb = viewBounds(o, w, h);
+        vb = viewBounds(o, w, h, s);
 
       // setup
       g.save();
-      const b = this._redraw || db.empty() ? (this._redraw = false, vb.expand(1)) : clipToBounds(g, vb.intersect(db), o);
+      const b = this._redraw || db.empty() ? (this._redraw = false, vb.expand(1)) : clipToBounds(g, vb.intersect(db), o, s);
       this.clear(-o[0], -o[1], w, h);
 
       // render
@@ -18140,8 +18209,8 @@
       }
     }
   }
-  const viewBounds = (origin, width, height) => new Bounds().set(0, 0, width, height).translate(-origin[0], -origin[1]);
-  function clipToBounds(g, b, origin) {
+  const viewBounds = (origin, width, height, scaleFactor) => new Bounds().set(0, 0, width, height).scale(1 / scaleFactor).translate(-origin[0], -origin[1]);
+  function clipToBounds(g, b, origin, scaleFactor) {
     // expand bounds by 1 pixel, then round to pixel boundaries
     b.expand(1).round();
 
@@ -18149,6 +18218,7 @@
     if (g.pixelRatio % 1) {
       b.scale(g.pixelRatio).round().scale(1 / g.pixelRatio);
     }
+    b.scale(1 / scaleFactor);
 
     // to avoid artifacts translate if origin has fractional pixels
     b.translate(-(origin[0] % 1), -(origin[1] % 1));
@@ -18882,8 +18952,10 @@
       ++idx;
     });
 
+    // CHANGE
     // remove any extraneous DOM elements
-    domClear(el, 1 + idx);
+    // domClear(el, 1 + idx);
+    domClear(el, idx);
   }
 
   // Bind a scenegraph item to an SVG DOM element.

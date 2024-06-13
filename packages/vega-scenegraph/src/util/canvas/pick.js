@@ -54,8 +54,8 @@ export function hitPath(path, filled) {
     // const xCanvas = x * scaleFactor + dx;
     // const yCanvas = y * scaleFactor + dy;
 
-    const origin = context.origin
-    const scaleFactor = context.scale
+    const origin = context.origin;
+    const scaleFactor = context.scale;
 
     const xCanvas = (x + origin[0]) * scaleFactor;
     const yCanvas = (y + origin[1]) * scaleFactor;
