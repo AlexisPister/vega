@@ -3373,7 +3373,14 @@
   }
   function clipGroup(context, group) {
     context.beginPath();
-    hasCornerRadius(group) ? rectangle(context, group, 0, 0) : context.rect(0, 0, group.width || 0, group.height || 0);
+
+    // Added
+    let xClip = group.cx ?? 0;
+    let yClip = group.cy ?? 0;
+    hasCornerRadius(group) ? rectangle(context, group, 0, 0) : context.rect(xClip, yClip, group.width || 0, group.height || 0);
+    // hasCornerRadius(group)
+    //   ? rectangle(context, group, 0, 0)
+    //   : context.rect(0, 0, group.width || 0, group.height || 0);
     context.clip();
   }
 
