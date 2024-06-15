@@ -185,6 +185,7 @@ function pick(context, scene, x, y, gx, gy) {
       : null
     );
 
+
     // hit test against group background
     if (!hit && ix && (group.fill || (!fore && group.stroke))
         && hitBackground(context, group, cx, cy)) {

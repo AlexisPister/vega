@@ -33,7 +33,6 @@ export default function(type, shape, tip) {
         b = scene.bounds;
 
     if (!items || !items.length || b && !b.contains(gx, gy)) {
-      console.log(111)
       return null;
     }
 
