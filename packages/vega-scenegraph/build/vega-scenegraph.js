@@ -3502,11 +3502,30 @@
       // passed bounds check, test rectangular clip
       dx = group.x || 0;
       dy = group.y || 0;
-      const dw = dx + (group.width || 0),
+      let dw = dx + (group.width || 0),
         dh = dy + (group.height || 0),
         c = group.clip;
+
+      // if (c && (gx < dx || gx > dw || gy < dy || gy > dh)) {
+      //   return;
+      // }
+
+      // Added
+      if (c) {
+        dw *= context.scale / context.pixelRatio;
+        dh *= context.scale / context.pixelRatio;
+      }
       if (c && (gx < dx || gx > dw || gy < dy || gy > dh)) {
         return;
+      }
+      if (c) {
+        const cx = group.cx || 0;
+        const cy = group.cy || 0;
+        const width = group.width || 0;
+        const height = group.height || 0;
+        if (cx > gx || cx + width < gx || cy > gy || cy + height < gy) {
+          return;
+        }
       }
 
       // adjust coordinate system
